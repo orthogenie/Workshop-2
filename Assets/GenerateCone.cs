@@ -8,8 +8,14 @@ using UnityEngine;
 // MeshFilter component on the same game object. If it doesn't exist, the Unity
 // engine will create one automatically.
 [RequireComponent(typeof(MeshFilter))]
-public class GeneratePyramid : MonoBehaviour
+public class GenerateCone : MonoBehaviour
 {
+
+    [SerializedField] int numBaseVerticies = 4;
+    [SerializedField] float height = 1.0f;
+
+    private double angle = 360/numBaseVerticies;
+
     private void Start()
     {
         // First we'll get the MeshFilter attached to this game object, in the
@@ -27,7 +33,7 @@ public class GeneratePyramid : MonoBehaviour
         // - https://docs.unity3d.com/ScriptReference/Mesh.html
         var mesh = new Mesh
         {
-            name = "Pyramid"
+            name = "Cone"
         };
 
         // Step 1: Define the vertices. These are "points" in 3D space that
@@ -35,74 +41,22 @@ public class GeneratePyramid : MonoBehaviour
         // ordered them such that consecutive chunks of three vertices represent
         // individual triangles. This does not have to be the case though, and
         // depends on the way the mesh surface itself is defined (step 3).
-        mesh.SetVertices(new[]
-        {
-
-            // Bottom face
-            new Vector3(0f, 0f, -1.0f),
-            new Vector3(0f, 0f, 1.0f),
-            new Vector3(-1.0f, 0f, 0f),
-            
-            new Vector3(0f, 0f, -1.0f),
-            new Vector3(1.0f, 0f, 0f),
-            new Vector3(0f, 0f, 1.0f),
-
-            // Left front face
-            new Vector3(0f, 1.0f, 0f),
-            new Vector3(0f, 0f, -1.0f),
-            new Vector3(-1.0f, 0f, 0f),
-
-            // Right front face
-            new Vector3(0f, 1.0f, 0f),
-            new Vector3(1.0f, 0f, 0f),
-            new Vector3(0f, 0f, -1.0f),
-
-            // Left back face
-            new Vector3(0f, 1.0f, 0f),
-            new Vector3(-1.0f, 0f, 0f),
-            new Vector3(0f, 0f, 1.0f),
-            
-            // Right back face
-            new Vector3(0f, 1.0f, 0f),
-            new Vector3(0f, 0f, 1.0f),
-            new Vector3(1.0f, 0f, 0f)
-            
-
-        });
+        
+        List<Vector3> vectors = new List<Vector3>();
+        for (int i=0; i < numBaseVerticies; i++) {
+                vectors.add(new Vector3(0f, 0f, 0f));
+                vectors.add(new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)));
+                vectors.add(new Vector3(Mathf.Cos(2*angle), 0f, Mathf.Sin(2*angle)));
+            }
+        
+        mesh.SetVertices(vectors);
 
         // Step 2: Define the vertex colours. There is a one-to-one index
         // mapping between the vertices defined above and these colours below,
         // so the length of both arrays must be the same.
         mesh.SetColors(new[]
         {
-        // Bottom face
-            Color.blue,
-            Color.blue,
-            Color.blue,
-            
-            Color.blue,
-            Color.blue,
-            Color.blue,
 
-            // Front left face
-            Color.yellow, 
-            Color.yellow,
-            Color.yellow,
-
-            // Front right face
-            Color.red, 
-            Color.red,
-            Color.red,
-
-            // Back left face
-            Color.red, 
-            Color.red,
-            Color.red,
-            
-            // Back right face
-            Color.yellow,
-            Color.yellow,
-            Color.yellow
             
 
         });
